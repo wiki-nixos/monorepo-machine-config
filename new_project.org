@@ -143,6 +143,8 @@ Flake-parts:
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     naersk.url = "github:nix-community/naersk/master";
+
+    pre-commit-hooks-nix.url = "github:cachix/pre-commit-hooks.nix";
   };
 #+end_src
 
@@ -178,6 +180,7 @@ Flake-parts:
           imports = [
             inputs.devshell.flakeModule
             inputs.flake-parts.flakeModules.easyOverlay
+            inputs.pre-commit-hooks-nix.flakeModule
           ];
 #+end_src
 
@@ -215,6 +218,20 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
 
 #+begin_src nix
               formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
+#+end_src
+
+**** Pre-commit config
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+              pre-commit = {
+                settings.hooks = {
+                  nixpkgs-fmt.enable = true;
+                  deadnix.enable = true;
+                };
+              };
 #+end_src
 
 **** Packages
@@ -4219,11 +4236,10 @@ Imported [[(neptunium-network-import)][here]].
 
 ** CI/CD
 
-*** TODO Setup a canary VM :chore:
-
-*** TODO Treefmt :chore:
-
-I have some shell files here -- need to auto format them
+*** STRT Pre-commit checks :chore:
+- [ ] Literate project file is tangled
+- [ ] Nix dead code
+- [ ] Nix flake check
 
 *** TODO Checks for org file :chore:
 Mostly visual things that annoy me:
@@ -4235,10 +4251,13 @@ Mostly visual things that annoy me:
 
     ~rg --no-filename --no-line-number "^\*+" | sed 's/^\*\+ //g' | sort | uniq -c | grep -v " 1 "~
 
-*** TODO Pre-commit checks :chore:
-- [ ] Literate project file is tangled
-- [ ] Nix dead code
-- [ ] Nix flake check
+
+*** TODO Treefmt :chore:
+
+I have some shell files here -- need to auto format them
+
+*** TODO Setup a canary VM :chore:
+
 
 ** Publish
 *** TODO [#C] Hugo publish :chore:

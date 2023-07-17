@@ -63,6 +63,8 @@
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     naersk.url = "github:nix-community/naersk/master";
+
+    pre-commit-hooks-nix.url = "github:cachix/pre-commit-hooks.nix";
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -82,6 +84,7 @@
           imports = [
             inputs.devshell.flakeModule
             inputs.flake-parts.flakeModules.easyOverlay
+            inputs.pre-commit-hooks-nix.flakeModule
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
@@ -100,6 +103,14 @@
               # [[file:new_project.org::*Formatter][Formatter:1]]
               formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
               # Formatter:1 ends here
+              # [[file:new_project.org::*Pre-commit config][Pre-commit config:1]]
+              pre-commit = {
+                settings.hooks = {
+                  nixpkgs-fmt.enable = true;
+                  deadnix.enable = true;
+                };
+              };
+              # Pre-commit config:1 ends here
               # [[file:new_project.org::*Packages][Packages:1]]
               packages =
                 let
